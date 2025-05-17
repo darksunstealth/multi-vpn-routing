@@ -6,7 +6,6 @@ This project demonstrates a real-world **multi-tenant VPN system with full isola
 - WireGuard and OpenVPN chaining
 - Network namespaces with veth pairs
 - iptables, ip rules, policy-based routing (PBR)
-- PostgreSQL for session logging
 - Shell scripts for automation
 - DNS Leak Prevention
 - Dedicated IP per namespace (🇫🇷 French IP)
