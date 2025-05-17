@@ -25,12 +25,15 @@ sudo ip netns exec "$NAMESPACE" ping 8.8.8.8 # Should timeout
 > At this point, there's no connectivity. Routing begins here.
 
 ---
+![VPN Chaining Diagram](images/netns-list.png)
+
 
 ### 2. Creating veth pair (host ↔ namespace)
 ```bash
 sudo ip link add "$VETH_ROOT" type veth peer name "$VETH_NS"
 sudo ip link set "$VETH_NS" netns "$NAMESPACE"
 ```
+![VPN Chaining Diagram](images/host--ip-a.png)
 
 ---
 
@@ -45,6 +48,7 @@ sudo ip netns exec "$NAMESPACE" ip addr add "$NAMESPACE_IP/30" dev "$VETH_NS"
 sudo ip netns exec "$NAMESPACE" ip link set "$VETH_NS" up
 sudo ip netns exec "$NAMESPACE" ip link set lo up
 ```
+![VPN Chaining Diagram](images/netns-exec.png)
 
 ---
 
@@ -53,6 +57,7 @@ sudo ip netns exec "$NAMESPACE" ip link set lo up
 sudo ip netns exec "$NAMESPACE" ip route add default via "$BRIDGE_IP"
 ```
 
+![VPN Chaining Diagram](images/netns-ip-route.png)
 ---
 
 ### 5. Starting WireGuard inside namespace
@@ -84,6 +89,7 @@ sudo iptables -A FORWARD -d "$NAMESPACE_VS_IP" -m state --state RELATED,ESTABLIS
 ```bash
 sudo ip netns exec "$NAMESPACE" iptables -t nat -A POSTROUTING -s "$CLIENT_IP" -o "$VETH_NS" -j MASQUERADE
 ```
+![VPN Chaining Diagram](images/postrouting.png)
 
 ---
 
